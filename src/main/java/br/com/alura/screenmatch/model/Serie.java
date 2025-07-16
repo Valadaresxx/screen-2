@@ -22,7 +22,7 @@ public class Serie {
     private String atores;
     private String sinopse;
     private String capa;
-    @Transient
+    @OneToMany(mappedBy = "serie")
     private List<Episodio> episodios = new ArrayList<>();
 
     public Serie() {
@@ -100,6 +100,14 @@ public class Serie {
 
     public void setCapa(String capa) {
         this.capa = capa;
+    }
+
+    public List<Episodio> getEpisodios() {
+        return episodios;
+    }
+
+    public void setEpisodios(List<Episodio> episodios) {
+        this.episodios = episodios;
     }
 
     @Override
