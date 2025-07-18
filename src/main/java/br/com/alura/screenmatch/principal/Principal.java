@@ -35,6 +35,9 @@ public class Principal {
                     1 - Buscar séries
                     2 - Buscar episódios
                     3 - Listar séries buscadas
+                    4 - Buscar serie por titulo
+                    5 - Buscar serie pelo autor
+                    6 - Buscar top 5 Series
                     
                     0 - Sair
                     """;
@@ -52,6 +55,15 @@ public class Principal {
                     break;
                 case 3:
                     listarSerieBuscada();
+                    break;
+                case 4:
+                    buscarSeriePorTitulo();
+                    break;
+                case 5:
+                    buscarSeriePorAutor();
+                    break;
+                case 6:
+                    buscarTop5Series();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -84,9 +96,7 @@ public class Principal {
         System.out.println("qual serie quer buscar pelo nome: ");
         var nomeSerie = leitura.nextLine();
 
-        Optional<Serie> serie = series.stream()
-                .filter(s -> s.getTitulo().toLowerCase().contains(nomeSerie.toLowerCase()))
-                .findFirst();
+        Optional<Serie> serie = repositorio.findByTituloContainingIgnoreCase(nomeSerie);
 
         if (serie.isPresent()) {
             var serieEncontrada = serie.get();
@@ -114,5 +124,31 @@ public class Principal {
         series = repositorio.findAll();
         series.stream()
                 .sorted(Comparator.comparing(Serie::getGenero)).forEach(System.out::println);
+    }
+
+    private void buscarSeriePorTitulo() {
+        System.out.println("qual serie quer buscar pelo nome: ");
+        var nomeSerie = leitura.nextLine();
+        Optional<Serie> serieBuscada = repositorio.findByTituloContainingIgnoreCase(nomeSerie);
+        if(serieBuscada.isPresent()){
+            System.out.println("Dados da serie: " + serieBuscada.get());
+        }else{
+            System.out.println("Erro na busca da serie!");
+        }
+    }
+
+    private void buscarSeriePorAutor() {
+        System.out.println("qual serie quer buscar pelo nome do autor: ");
+        var nomeAutor = leitura.nextLine();
+        List<Serie> serieBuscada = repositorio.findByAtoresContainingIgnoreCase(nomeAutor);
+        System.out.println("Serie com " + nomeAutor + ":");
+        serieBuscada.forEach(s ->
+                System.out.println(s.getTitulo()));
+    }
+
+    private void buscarTop5Series() {
+        List<Serie> serieTop5 = repositorio.findTop5ByOrderByAvaliacaoDesc();
+        serieTop5.forEach(s ->
+                System.out.println(s.getTitulo() + " - Avaliação: " + s.getAvaliacao()));
     }
 }
