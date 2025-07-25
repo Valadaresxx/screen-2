@@ -29,5 +29,9 @@ public class SerieService {
                         s.getGenero(), s.getAtores(), s.getSinopse(), s.getCapa()))
                 .collect(Collectors.toList());
     }
+
+    public List<SerieDTO> obterLancamentos() {
+        return converteDados(repositorio.findTop5ByOrderByEpisodioDataLancamentoDesc());
+    }
 }
 
